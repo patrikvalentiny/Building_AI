@@ -1,25 +1,30 @@
 import numpy as np
 
-
-def generate(p1):
-    # change this so that it generates 10000 random zeros and ones
-    # where the probability of one is p1
-    seq = np.random.choice([0, 1], p=[1 - p1, p1], size=10000)
-    return seq
+countries = ['Denmark', 'Finland', 'Iceland', 'Norway', 'Sweden']
+populations = [5615000, 5439000, 324000, 5080000, 9609000]
+male_fishers = [1822, 2575, 3400, 11291, 1731]
+female_fishers = [69, 77, 400, 320, 26]
 
 
-def count(seq):
-    # insert code to return the number of occurrences of 11111 in the sequence
-    count = 0
-    for i in range(len(seq - 5)):
-        if np.array_equal(seq[i:i + 5], [1 for i in range(5)]):
-            count += 1
-    return count
+def guess(winner_gender):
+    if winner_gender == 'female':
+        fishers = female_fishers
+    else:
+        fishers = male_fishers
+
+    # write your solution here
+    index = np.argmax(fishers)
+
+    guess = countries[index]
+    biggest = fishers[index] / sum(fishers) * 100
+    return guess, biggest
 
 
-def main(p1):
-    seq = generate(p1)
-    return count(seq)
+def main():
+    country, fraction = guess("male")
+    print("if the winner is male, my guess is he's from %s; probability %.2f%%" % (country, fraction))
+    country, fraction = guess("female")
+    print("if the winner is female, my guess is she's from %s; probability %.2f%%" % (country, fraction))
 
 
-print(main(2 / 3))
+main()
