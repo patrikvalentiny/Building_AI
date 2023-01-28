@@ -1,43 +1,31 @@
 import numpy as np
+from io import StringIO
 
-# data
-X = np.array([[66, 5, 15, 2, 500],
-              [21, 3, 50, 1, 100],
-              [120, 15, 5, 2, 1200]])
-y = np.array([250000, 60000, 525000])
+input_string = '''
+25 2 50 1 500 127900
+39 3 10 1 1000 222100
+13 2 13 1 1000 143750
+82 5 20 2 120 268000
+130 6 10 2 600 460700
+115 6 10 1 550 407000
+'''
 
-# alternative sets of coefficient values
-c = np.array([[3000, 200 , -50, 5000, 100],
-              [2000, -250, -100, 150, 250],
-              [3000, -100, -150, 0, 150]])
-
-def find_best(X, y, c):
-    smallest_error = np.Inf
-    best_index = -1
-    for i, coeff in enumerate(c):
-        # edit here: calculate the sum of squared error with coefficient set coeff and
-        # keep track of the one yielding the smallest squared error
-        sse = squared_error(X, y, coeff)
-        if sse < smallest_error:
-            smallest_error = sse
-            best_index = i
-
-    print("the best set is set %d" % best_index)
+np.set_printoptions(precision=1)  # this just changes the output settings for easier reading
 
 
-def squared_error(X, y, c):
-    sse = 0.0
-    for xi, yi in zip(X, y):
-        # add your code here: calculate the predicted price,
-        diff = np.dot(xi, c)
-        # subtract it from the actual price yi,
-        diff = yi - diff
-        # square the difference using (yi - prediction)**2,
-        diff = diff ** 2
-        # and add up all the differences in variable sse
-        sse += diff
+def fit_model(input_file):
+    # Please write your code inside this function
+    data = np.genfromtxt(input_file, skip_header=1)
+    # read the data in and fit it. the values below are placeholder values
+    x = data[:, 0:5] # input data to the linear regression
+    y = data[:, -1]
 
-    return sse
+    c = np.linalg.lstsq(x, y)[0] # coefficients of the linear regression
+
+    print(c)
+    print(x @ c)
 
 
-find_best(X, y, c)
+# simulate reading a file
+input_file = StringIO(input_string)
+fit_model(input_file)
