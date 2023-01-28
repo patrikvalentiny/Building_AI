@@ -1,7 +1,7 @@
 import numpy as np
 from io import StringIO
 
-input_string = '''
+train_string = '''
 25 2 50 1 500 127900
 39 3 10 1 1000 222100
 13 2 13 1 1000 143750
@@ -10,22 +10,31 @@ input_string = '''
 115 6 10 1 550 407000
 '''
 
-np.set_printoptions(precision=1)  # this just changes the output settings for easier reading
+test_string = '''
+36 3 15 1 850 196000
+75 5 18 2 540 290000
+'''
 
 
-def fit_model(input_file):
+def main():
+    np.set_printoptions(precision=1)  # this just changes the output settings for easier reading
+
     # Please write your code inside this function
-    data = np.genfromtxt(input_file, skip_header=1)
-    # read the data in and fit it. the values below are placeholder values
-    x = data[:, 0:5] # input data to the linear regression
-    y = data[:, -1]
 
-    c = np.linalg.lstsq(x, y)[0] # coefficients of the linear regression
+    # read in the training data and separate it to x_train and y_train
+    x_train = np.genfromtxt(StringIO(train_string))[:, 0:5]
+    y_train = np.genfromtxt(StringIO(train_string))[:, -1]
+    # fit a linear regression model to the data and get the coefficients
+    c = np.linalg.lstsq(x_train, y_train)[0]
 
+    # read in the test data and separate x_test from it
+    x_test = np.genfromtxt(StringIO(test_string))[:, 0:5]
+
+    # print out the linear regression coefficients
     print(c)
-    print(x @ c)
+
+    # this will print out the predicted prics for the two new cabins in the test data set
+    print(x_test @ c)
 
 
-# simulate reading a file
-input_file = StringIO(input_string)
-fit_model(input_file)
+main()
