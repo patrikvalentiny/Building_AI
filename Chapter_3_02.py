@@ -1,9 +1,27 @@
 import numpy as np
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 
-x_train = np.random.rand(10, 3)  # generate 10 random vectors of dimension 3
-x_test = np.random.rand(3)  # generate one more random vector of the same dimension
+# create random data with two classes
+X, Y = make_blobs(n_samples=16, n_features=2, centers=2, center_box=(-2, 2))
+
+# scale the data so that all values are between 0.0 and 1.0
+X = MinMaxScaler().fit_transform(X)
+
+# split two data points from the data as test data and
+# use the remaining n-2 points as the training data
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=2)
+
+# place-holder for the predicted classes
+y_predict = np.empty(len(y_test), dtype=np.int64)
+print(y_test)
+# produce line segments that connect the test data points
+# to the nearest neighbors for drawing the chart
+lines = []
 
 
+# distance function
 def dist(a, b):
     sum = 0
     for ai, bi in zip(a, b):
@@ -11,18 +29,28 @@ def dist(a, b):
     return np.sqrt(sum)
 
 
-def nearest(x_train, x_test):
-    nearest = -1
-    min_distance = np.Inf
-    # add a loop here that goes through all the vectors in x_train and finds the one that
-    # is nearest to x_test. return the index (between 0, ..., len(x_train)-1) of the nearest
-    # neighbor
-    for i in range(len(x_train)):
-        distance = dist(x_train[i], x_test)
-        if distance < min_distance:
-            min_distance = distance
-            nearest = i
-    print(nearest)
+def main(X_train, X_test, y_train, y_test):
+    global y_predict
+    global lines
+
+    k = 3  # classify our test items based on the classes of 3 nearest neighbors
+
+    # process each of the test data points
+    for i, test_item in enumerate(X_test):
+        # calculate the distances to all training points
+        distances = [dist(train_item, test_item) for train_item in X_train]
+
+        # add your code here
+        nearest = np.argsort(distances)
+
+        # create a line connecting the points for the chart
+        # you may change this to do the same for all the k nearest neigbhors if you like
+        # but it will not be checked in the tests
+        # lines.append(np.stack((test_item, X_train[nearest])))
+        y = [y_train[i] for i in nearest]
+        y_predict[i] = np.round(np.mean(y[:k]))  # this just classifies everything as 0
+
+    print(y_predict)
 
 
-nearest(x_train, x_test)
+main(X_train, X_test, y_train, y_test)
