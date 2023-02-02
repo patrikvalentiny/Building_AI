@@ -1,24 +1,26 @@
-# this data here is the bag of words representation of This Little Piggy
+import numpy as np
+
 data = [[1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
         [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1],
         [1, 1, 1, 0, 1, 3, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1]]
 
-def distance(row1, row2):
-    # fix this function so that it returns
-    # the sum of differences between the occurrences
-    # of each word in row1 and row2.a
-    # you can assume that row1 and row2 are lists with equal length, containing numeric values.
-    dist = 0
-    for r1, r2 in zip(row1, row2):
-        dist += abs(r1-r2)
-    return dist
 
-def all_pairs(data):
-    # this calls the distance function for all the two-row combinations in the data
-    # you do not need to change this
-    dist = [[distance(sent1, sent2) for sent1 in data] for sent2 in data]
-    print(dist)
+def find_nearest_pair(data):
+    N = len(data)
+    dist = np.empty((N, N), dtype=np.single)
+    for i in range(N):
+        for j in range(N):
+            sum = 0
+            if i == j:
+                sum = np.inf
+            else:
+                for k in range(len(data[i])):
+                    sum += abs(data[i][k] - data[j][k])
+            dist[i, j] = sum
 
-all_pairs(data)
+    print(np.unravel_index(np.argmin(dist), dist.shape))
+
+
+find_nearest_pair(data)
